@@ -41,7 +41,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 // enable the SVMP launcher
                 pm.setComponentEnabledSetting(componentName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, 0);
                 // set the AOSP launcher as the default to make sure we don't have BOOT_COMPLETED broadcast issues
-                LauncherHandler.setDefaultLauncher(context, pm, false);
+                LauncherHandler.setDefaultLauncherWithoutStart(context, pm, false);
             }
 
             // Enable mock location providers (turned off by default on user builds)

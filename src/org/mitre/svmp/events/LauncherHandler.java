@@ -102,7 +102,7 @@ public class LauncherHandler extends BaseHandler {
         filter.addCategory(Intent.CATEGORY_HOME);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         int bestMatch = IntentFilter.MATCH_CATEGORY_EMPTY;
-        ComponentName aospComponent = new ComponentName("com.android.launcher", "com.android.launcher2.Launcher");
+        ComponentName aospComponent = new ComponentName("com.cyanogenmod.trebuchet", "com.android.launcher3.Launcher");
         ComponentName svmpComponent = new ComponentName(context.getPackageName(), LauncherActivity.class.getName());
         ComponentName[] components = new ComponentName[] {aospComponent, svmpComponent};
 
@@ -119,5 +119,24 @@ public class LauncherHandler extends BaseHandler {
         launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // required to start an activity from outside of an Activity context
         launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // when this is started, clear other launcher activities
         context.startActivity(launchIntent);
+    }
+
+    protected static void setDefaultLauncherWithoutStart(Context context, PackageManager packageManager, boolean svmp) {
+        Log.d(TAG, "Setting default launcher to: " + (svmp ? "svmp" : "aosp"));
+
+        // set up args
+        IntentFilter filter = new IntentFilter(Intent.ACTION_MAIN);
+        filter.addCategory(Intent.CATEGORY_HOME);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        int bestMatch = IntentFilter.MATCH_CATEGORY_EMPTY;
+        ComponentName aospComponent = new ComponentName("com.cyanogenmod.trebuchet", "com.android.launcher3.Launcher");
+        ComponentName svmpComponent = new ComponentName(context.getPackageName(), LauncherActivity.class.getName());
+        ComponentName[] components = new ComponentName[] {aospComponent, svmpComponent};
+
+        // set preferred launcher and clear preferences for other launcher
+        ComponentName preferred = svmp ? svmpComponent : aospComponent,
+                other = svmp ? aospComponent : svmpComponent;
+        packageManager.clearPackagePreferredActivities(other.getPackageName());
+        packageManager.addPreferredActivity(filter, bestMatch, components, preferred);
     }
 }

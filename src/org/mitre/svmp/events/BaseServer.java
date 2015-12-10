@@ -41,7 +41,7 @@ import java.util.concurrent.SynchronousQueue;
 
 /**
  * Base, 1 socket at a time, TCP Server.
- * 
+ *
  * Threaded to not completely block and ignore new connections while an
  * existing one is running, but a new connection will kick off any previous
  * logins. Only one live connection at a time is allowed.
@@ -53,10 +53,10 @@ public abstract class BaseServer implements Constants {
     private InputStream proxyIn = null;
     private int proxyPort;
     private static final String TAG = BaseServer.class.getName();
-    
+
     private native int InitSockClient(String path);
     private native int SockClientWrite(int fd,SVMPSensorEventMessage event);
-    private native int SockClientClose(int fd); 
+    private native int SockClientClose(int fd);
     private int sockfd;
 
     private Context context;
@@ -76,7 +76,7 @@ public abstract class BaseServer implements Constants {
         Log.d(TAG, "InitSockClient returned " + sockfd);
         this.proxyPort = PROXY_PORT;
     }
-    
+
     static {
     	System.loadLibrary("remote_events_jni");
     }
@@ -219,7 +219,7 @@ public abstract class BaseServer implements Constants {
             if (webrtcHandler != null) {
                 webrtcHandler.disconnectAndExit();
             }
- 
+
             try {
                 proxyIn.close();
                 proxyOut.close();
@@ -245,7 +245,7 @@ public abstract class BaseServer implements Constants {
             Log.d(TAG, "Reusing existing WebRTC Handler.");
         }
     }
- 
+
     protected void sendMessage(Response message) {
         // use synchronized statement to ensure only one message gets sent at a time
         synchronized(sendMessageLock) {
@@ -299,7 +299,7 @@ public abstract class BaseServer implements Constants {
     // set the system default timezone based on the client's timezone
     public void handleTimezone(final Request request) {
       if (request.hasTimezoneId()) {
-        
+
         // Reference: packages/apps/Settings/src/com/android/settings/ZonePicker.java
         // Update the system timezone value
         final AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
