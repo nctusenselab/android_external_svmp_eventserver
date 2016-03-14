@@ -72,8 +72,8 @@ public abstract class BaseServer implements Constants {
 
     public BaseServer(Context context) throws IOException {
         this.context = context;
-        sockfd = InitSockClient("/dev/socket/svmp_sensors");
-        Log.d(TAG, "InitSockClient returned " + sockfd);
+        // sockfd = InitSockClient("/dev/socket/svmp_sensors");
+        // Log.d(TAG, "InitSockClient returned " + sockfd);
         this.proxyPort = PROXY_PORT;
     }
 
@@ -320,7 +320,7 @@ public abstract class BaseServer implements Constants {
     // called from the SensorMessageRunnable
     public void sendSensorEvent(int sockfd, SVMPSensorEventMessage message) {
         // send message
-        SockClientWrite(sockfd, message);
+        //SockClientWrite(sockfd, message);
     }
 
 }
