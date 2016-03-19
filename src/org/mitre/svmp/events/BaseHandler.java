@@ -28,35 +28,35 @@ public class BaseHandler extends BroadcastReceiver implements Constants{
     protected BaseServer baseServer;
 
     // register a receiver without requiring any sender permissions
-    public BaseHandler(BaseServer baseServer, String... filterActions) {
-        this(null, baseServer, filterActions);
-    }
+	public BaseHandler(BaseServer baseServer, String... filterActions) {
+		this(null, baseServer, filterActions); }
 
-    // register a receiver, if "permission" is not null then it requires that the sender has that permission
-    public BaseHandler(String permission, BaseServer baseServer, String... filterActions) {
-        super();
-        this.baseServer = baseServer;
+	// register a receiver, if "permission" is not null then it requires that
+	// the sender has that permission
+	public BaseHandler(String permission, BaseServer baseServer, String... filterActions) { 
+		super(); this.baseServer = baseServer;
 
-        if( filterActions.length > 0 ) {
-            // register this BroadcastReceiver for the intent actions that we want
-            IntentFilter intentFilter = new IntentFilter();
-            for( int i = 0; i < filterActions.length; i++ )
-                intentFilter.addAction(filterActions[i]);
-            if (permission == null)
-                baseServer.getContext().registerReceiver(this, intentFilter);
-            else
-                baseServer.getContext().registerReceiver(this, intentFilter, permission, null);
-        }
-    }
+		if( filterActions.length > 0 ) {
+			// register this BroadcastReceiver for the intent actions that we
+			// want
+			IntentFilter intentFilter = new IntentFilter();
+		   	for( int i = 0; i < filterActions.length; i++ )
+				intentFilter.addAction(filterActions[i]);
+			if (permission == null)
+				baseServer.getContext().registerReceiver(this, intentFilter);
+			else
+				baseServer.getContext().registerReceiver(this, intentFilter, permission, null);
+		}
+	}
 
-    // receive message from Android components, pass them back to the client
-    public void onReceive(Context context, Intent intent) {
-        // override in child class
+	// receive message from Android components, pass them back to the client
+	public void onReceive(Context context, Intent intent) {
+		// override in child class
     }
 
     // send a Response to the EventServer
     protected void sendMessage(Response response) {
-        if( baseServer != null ) {
+       if( baseServer != null ) {
             baseServer.sendMessage(response);
         }
     }

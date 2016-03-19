@@ -30,4 +30,9 @@ public interface Constants {
     public static final String LAUNCHER_STARTED_ACTION = "org.mitre.svmp.action.LAUNCHER_STARTED";
     public static final String KEYBOARD_ATTACHED_ACTION = "org.mitre.svmp.action.KEYBOARD_ATTACHED";
     public static final String KEYBOARD_DETACHED_ACTION = "org.mitre.svmp.action.KEYBOARD_DETACHED";
+
+	/*
+	 * added by FatMinMin
+	 */
+	public static final String INTENT_VIEW_ACTION = "com.fatminmin.svmp.action.ACTION_VIEW";
 }

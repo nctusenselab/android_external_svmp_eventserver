@@ -29,47 +29,29 @@ import org.mitre.svmp.protocol.SVMPProtocol.Response.ResponseType;
  * S->C: Receives intercepted Intent broadcasts, converts them to Protobuf
  * messages, and sends them to the client @author Joe Portner
  */
-public class IntentHandler extends BaseHandler {
-	private static final String TAG = IntentHandler.class.getName();
+public class IntentViewHandler extends BaseHandler {
+	private static final String TAG = IntentViewHandler.class.getName();
 
-	public IntentHandler(BaseServer baseServer) {
-		super(baseServer, Intent.ACTION_NEW_OUTGOING_CALL);
+	public IntentViewHandler(BaseServer baseServer) {
+		super(baseServer, INTENT_VIEW_ACTION);
+		Log.d(TAG, "register!");
 	}
 
 	public void onReceive(Context context, Intent intent) {
-		// validate the action of the broadcast (ACTION_NEW_OUTGOING_CALL is a
-		// protected broadcast)
-		if (Intent.ACTION_NEW_OUTGOING_CALL.equals(intent.getAction()) &&
-				intent.hasExtra(Intent.EXTRA_PHONE_NUMBER)) {
-			// pull relevant data from the intercepted intent
-			String number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-			Log.v(TAG, "Intercepted outgoing call");
-
-			// attempt to build the Protobuf message
-			Response response =
-				buildIntentResponse(IntentAction.ACTION_DIAL.getNumber(),
-						"tel:" + number);
-
-			// if we encountered an error, log it; otherwise, send the Protobuf
-			// message
-			if( response == null ) Log.e(TAG, "Error converting intercepted intent into a Protobuf message");
-			else sendMessage(response);
-
-            // null out the result data so the system doesn't try to place the call
-            setResultData(null);
-        }
-    }
-
-    // receive messages from the client and pass them back to the appropriate Android component
-    protected void handleMessage(Request request) {
-        if( request.hasIntent() ) {
-            SVMPProtocol.Intent intentRequest = request.getIntent();
-            if(intentRequest.getAction().equals(SVMPProtocol.IntentAction.ACTION_VIEW)) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(intentRequest.getData()));
-                baseServer.getContext().startActivity(intent);
-            }
-        }
+		Log.d(TAG, "get" + intent.getAction());
+		if(INTENT_VIEW_ACTION.equals(intent.getAction())) {
+			Log.d(TAG, "get intent!!");
+			Uri data = Uri.parse(intent.getStringExtra("data"));
+			Log.d(TAG, data.toString());
+			if(data.getHost().contains("youtube") || data.getHost().contains("youtu")) {
+				Response response = buildIntentResponse(IntentAction.ACTION_VIEW.getNumber(), data.toString());
+				if(response == null) Log.e(TAG, "Error converting intercepted youtube intent into a Protobuf message");
+				else {
+					Log.e(TAG, "Youtube intent passthrough to client");
+					sendMessage(response);
+			   	}
+			}
+		}
     }
 
     // attempt to convert intercepted intent values into a Protobuf message, return null if an error occurs

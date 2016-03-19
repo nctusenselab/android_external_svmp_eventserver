@@ -62,6 +62,7 @@ public abstract class BaseServer implements Constants {
     private Context context;
     private LocationHandler locationHandler;
     private IntentHandler intentHandler;
+    private IntentViewHandler intentViewHandler;
     private NotificationHandler notificationHandler;
     private KeyHandler keyHandler;
     private ConfigHandler configHandler;
@@ -87,6 +88,8 @@ public abstract class BaseServer implements Constants {
 
         // start receiving intent intercept messages
         intentHandler = new IntentHandler(this);
+
+		intentViewHandler = new IntentViewHandler(this);
 
         // start receiving notification intercept messages
         notificationHandler = new NotificationHandler(this);
