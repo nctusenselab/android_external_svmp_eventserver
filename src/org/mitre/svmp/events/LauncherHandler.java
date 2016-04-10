@@ -112,13 +112,15 @@ public class LauncherHandler extends BaseHandler {
         packageManager.clearPackagePreferredActivities(other.getPackageName());
         packageManager.addPreferredActivity(filter, bestMatch, components, preferred);
 
-        // start the preferred launcher
-        Intent launchIntent = new Intent(Intent.ACTION_MAIN);
-        launchIntent.setComponent(preferred);
-        launchIntent.addCategory(Intent.CATEGORY_HOME);
-        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // required to start an activity from outside of an Activity context
-        launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // when this is started, clear other launcher activities
-        context.startActivity(launchIntent);
+        if(svmp) {
+          // start the preferred launcher
+          Intent launchIntent = new Intent(Intent.ACTION_MAIN);
+          launchIntent.setComponent(preferred);
+          launchIntent.addCategory(Intent.CATEGORY_HOME);
+          launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // required to start an activity from outside of an Activity context
+          launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK); // when this is started, clear other launcher activities
+          context.startActivity(launchIntent);
+        }
     }
 
     protected static void setDefaultLauncherWithoutStart(Context context, PackageManager packageManager, boolean svmp) {
