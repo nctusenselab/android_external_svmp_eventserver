@@ -66,6 +66,7 @@ public class IntentHandler extends BaseHandler {
             SVMPProtocol.Intent intentRequest = request.getIntent();
             if(intentRequest.getAction().equals(SVMPProtocol.IntentAction.ACTION_VIEW)) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
+								intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
                 intent.setData(Uri.parse(intentRequest.getData()));
                 baseServer.getContext().startActivity(intent);
             }
