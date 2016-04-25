@@ -25,6 +25,9 @@ import org.mitre.svmp.protocol.SVMPProtocol.Request;
 import org.mitre.svmp.protocol.SVMPProtocol.Response;
 import org.mitre.svmp.protocol.SVMPProtocol.Response.ResponseType;
 
+import com.google.protobuf.ByteString;
+import java.io.FileOutputStream;
+
 /** C->S: Receives intents from the client and starts activities accordingly
  * S->C: Receives intercepted Intent broadcasts, converts them to Protobuf
  * messages, and sends them to the client @author Joe Portner
@@ -60,13 +63,28 @@ public class IntentHandler extends BaseHandler {
         }
     }
 
+		protected void saveToFile(SVMPProtocol.Intent.File f) {
+				try {
+						ByteString bs = f.getData();
+						byte[] arr = bs.toByteArray();
+						FileOutputStream out = new FileOutputStream("/sdcard/" + f.getFilename());
+  					out.write(arr);
+  					out.close();
+				} catch(Exception e) {}
+		}
+
     // receive messages from the client and pass them back to the appropriate Android component
     protected void handleMessage(Request request) {
         if( request.hasIntent() ) {
             SVMPProtocol.Intent intentRequest = request.getIntent();
+						if( intentRequest.hasFile() ) {
+								SVMPProtocol.Intent.File f = intentRequest.getFile();
+								Log.e(TAG, "Receiving a file with filename: " + f.getFilename());
+								saveToFile(f);
+						}
             if(intentRequest.getAction().equals(SVMPProtocol.IntentAction.ACTION_VIEW)) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
-								intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 
+								intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setData(Uri.parse(intentRequest.getData()));
                 baseServer.getContext().startActivity(intent);
             }
