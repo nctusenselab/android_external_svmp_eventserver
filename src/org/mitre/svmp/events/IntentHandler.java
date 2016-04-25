@@ -27,6 +27,8 @@ import org.mitre.svmp.protocol.SVMPProtocol.Response.ResponseType;
 
 import com.google.protobuf.ByteString;
 import java.io.FileOutputStream;
+import java.io.File;
+import android.webkit.MimeTypeMap;
 
 /** C->S: Receives intents from the client and starts activities accordingly
  * S->C: Receives intercepted Intent broadcasts, converts them to Protobuf
@@ -77,15 +79,18 @@ public class IntentHandler extends BaseHandler {
     protected void handleMessage(Request request) {
         if( request.hasIntent() ) {
             SVMPProtocol.Intent intentRequest = request.getIntent();
-						if( intentRequest.hasFile() ) {
-								SVMPProtocol.Intent.File f = intentRequest.getFile();
-								Log.e(TAG, "Receiving a file with filename: " + f.getFilename());
-								saveToFile(f);
-						}
             if(intentRequest.getAction().equals(SVMPProtocol.IntentAction.ACTION_VIEW)) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
+								Intent intent = new Intent(Intent.ACTION_VIEW);
 								intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setData(Uri.parse(intentRequest.getData()));
+								if( intentRequest.hasFile() ) {
+										SVMPProtocol.Intent.File f = intentRequest.getFile();
+										Log.e(TAG, "Receiving a file with filename: " + f.getFilename());
+										saveToFile(f);
+										File savedFile = new File("/sdcard/" + f.getFilename());
+										intent.setDataAndType(Uri.fromFile(savedFile), "application/pdf");
+								} else {
+										intent.setData(Uri.parse(intentRequest.getData()));
+								}
                 baseServer.getContext().startActivity(intent);
             }
         }
