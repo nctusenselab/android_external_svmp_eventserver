@@ -65,32 +65,32 @@ public class IntentHandler extends BaseHandler {
         }
     }
 
-		protected void saveToFile(SVMPProtocol.Intent.File f) {
-				try {
-						ByteString bs = f.getData();
-						byte[] arr = bs.toByteArray();
-						FileOutputStream out = new FileOutputStream("/sdcard/" + f.getFilename());
-  					out.write(arr);
-  					out.close();
-				} catch(Exception e) {}
-		}
+	protected void saveToFile(SVMPProtocol.Intent.File f) {
+		try {
+			ByteString bs = f.getData();
+			byte[] arr = bs.toByteArray();
+			FileOutputStream out = new FileOutputStream("/sdcard/" + f.getFilename());
+			out.write(arr);
+			out.close();
+		} catch(Exception e) {}
+	}
 
     // receive messages from the client and pass them back to the appropriate Android component
     protected void handleMessage(Request request) {
         if( request.hasIntent() ) {
             SVMPProtocol.Intent intentRequest = request.getIntent();
             if(intentRequest.getAction().equals(SVMPProtocol.IntentAction.ACTION_VIEW)) {
-								Intent intent = new Intent(Intent.ACTION_VIEW);
-								intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-								if( intentRequest.hasFile() ) {
-										SVMPProtocol.Intent.File f = intentRequest.getFile();
-										Log.e(TAG, "Receiving a file with filename: " + f.getFilename());
-										saveToFile(f);
-										File savedFile = new File("/sdcard/" + f.getFilename());
-										intent.setDataAndType(Uri.fromFile(savedFile), "application/pdf");
-								} else {
-										intent.setData(Uri.parse(intentRequest.getData()));
-								}
+				Intent intent = new Intent(Intent.ACTION_VIEW);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				if( intentRequest.hasFile() ) {
+					SVMPProtocol.Intent.File f = intentRequest.getFile();
+					Log.e(TAG, "Receiving a file with filename: " + f.getFilename());
+					saveToFile(f);
+					File savedFile = new File("/sdcard/" + f.getFilename());
+					intent.setDataAndType(Uri.fromFile(savedFile), "application/pdf");
+				} else {
+					intent.setData(Uri.parse(intentRequest.getData()));
+				}
                 baseServer.getContext().startActivity(intent);
             }
         }
