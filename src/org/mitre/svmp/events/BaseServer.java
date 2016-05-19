@@ -71,6 +71,8 @@ public abstract class BaseServer implements Constants {
     private final Object sendMessageLock = new Object();
     private WebrtcHandler webrtcHandler = null;
 
+    private FileRequestHandler fileRequestHandler;
+
     public BaseServer(Context context) throws IOException {
         this.context = context;
         sockfd = InitSockClient("/dev/socket/svmp_sensors");
@@ -103,6 +105,8 @@ public abstract class BaseServer implements Constants {
         // receives Apps Launch messages from the client
         // receives launcher broadcasts and sends Apps Exit messages to the client
         launcherHandler = new LauncherHandler(this);
+
+        fileRequestHandler = new FileRequestHandler(this);
 
         // We create a SingleThreadExecutor because it executes sequentially
         // this guarantees that sensor event messages will be sent in order
@@ -210,6 +214,9 @@ public abstract class BaseServer implements Constants {
                     break;
                 case CONFIG:
                     configHandler.handleConfig(msg.getConfig());
+                    break;
+                case FILE_REQUEST:
+                    fileRequestHandler.handleMessage(msg);
                     break;
                 default:
                     break;

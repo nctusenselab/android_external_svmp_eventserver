@@ -51,9 +51,9 @@ public class IntentViewHandler extends BaseHandler {
 			Log.d(TAG, "get intent!!");
 			Uri data = Uri.parse(intent.getStringExtra("data"));
 			Log.d(TAG, data.toString());
-			SVMPProtocol.Intent.File.Builder f = null;
+			SVMPProtocol.File.Builder f = null;
 			if(data.getScheme().equals("file")) {
-				f = SVMPProtocol.Intent.File.newBuilder();
+				f = SVMPProtocol.File.newBuilder();
 				f.setFilename(data.getLastPathSegment());
 				f.setData(getByteString(data));
 			}
@@ -86,7 +86,7 @@ public class IntentViewHandler extends BaseHandler {
 	}
 
   // attempt to convert intercepted intent values into a Protobuf message, return null if an error occurs
-  private Response buildIntentResponse(int intentActionValue, String data, SVMPProtocol.Intent.File.Builder file) {
+  private Response buildIntentResponse(int intentActionValue, String data, SVMPProtocol.File.Builder file) {
       // validate that we pulled the data we need from the intercepted intent
       if( intentActionValue > -1 && data != null ) {
           try {
