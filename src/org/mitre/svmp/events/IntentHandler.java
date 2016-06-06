@@ -30,6 +30,9 @@ import java.io.FileOutputStream;
 import java.io.File;
 import android.webkit.MimeTypeMap;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 /** C->S: Receives intents from the client and starts activities accordingly
  * S->C: Receives intercepted Intent broadcasts, converts them to Protobuf
  * messages, and sends them to the client @author Joe Portner
@@ -75,9 +78,13 @@ public class IntentHandler extends BaseHandler {
 		} catch(Exception e) {}
 	}
 
-    // receive messages from the client and pass them back to the appropriate Android component
+    // receive messages from the client and pass them to the appropriate Android component
     protected void handleMessage(Request request) {
         if( request.hasIntent() ) {
+
+			String timeStamp = new SimpleDateFormat("HH.mm.ss.SS").format(new Date());
+			Log.d(TAG, "Forwarding intent. Timestamp: " + timeStamp + " " + System.currentTimeMillis());
+
             SVMPProtocol.Intent intentRequest = request.getIntent();
             if(intentRequest.getAction().equals(SVMPProtocol.IntentAction.ACTION_VIEW)) {
 				Intent intent = new Intent(Intent.ACTION_VIEW);

@@ -31,6 +31,9 @@ import com.google.protobuf.ByteString;
 import java.io.InputStream;
 import java.io.ByteArrayOutputStream;
 
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
 /** C->S: Receives intents from the client and starts activities accordingly
  * S->C: Receives intercepted Intent broadcasts, converts them to Protobuf
  * messages, and sends them to the client @author Joe Portner
@@ -45,10 +48,13 @@ public class IntentViewHandler extends BaseHandler {
 	}
 
 	public void onReceive(Context context, Intent intent) {
-		Log.d(TAG, "get" + intent.getAction());
+
 		mContext = context;
 		if(INTENT_VIEW_ACTION.equals(intent.getAction())) {
-			Log.d(TAG, "get intent!!");
+
+			String timeStamp = new SimpleDateFormat("HH.mm.ss.SS").format(new Date());
+			Log.d(TAG, "Forwarding intent. Timestamp: " + timeStamp + " " + System.currentTimeMillis());
+
 			Uri data = Uri.parse(intent.getStringExtra("data"));
 			Log.d(TAG, data.toString());
 			SVMPProtocol.File.Builder f = null;

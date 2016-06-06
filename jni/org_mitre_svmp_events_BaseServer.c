@@ -28,11 +28,11 @@
 #include <utils/Log.h>
 #include "org_mitre_svmp_events_BaseServer.h"
 
-struct svmp_sensor_event_t {  
-        int type;             
-        int accuracy;         
-        long timestamp;       
-        float value[3];       
+struct svmp_sensor_event_t {
+        int type;
+        int accuracy;
+        long timestamp;
+        float value[3];
 };
 
 /*
@@ -48,7 +48,7 @@ jint Java_org_mitre_svmp_events_BaseServer_InitSockClient( JNIEnv* env, jobject 
 	struct sockaddr_un addr;
 	struct sockaddr_un  cli_addr, serv_addr;
 	const char *path=(*env)->GetStringUTFChars( env, jpath , NULL );
-	
+
 	bzero((char *) &serv_addr, sizeof(serv_addr));
 	serv_addr.sun_family = AF_UNIX;
  	// pass the path in as an argument
@@ -74,7 +74,7 @@ jint Java_org_mitre_svmp_events_BaseServer_InitSockClient( JNIEnv* env, jobject 
  * Signature: (ILorg/mitre/svmp/protocol/SVMPSensorEventMessage;)I
  */
 JNIEXPORT jint JNICALL Java_org_mitre_svmp_events_BaseServer_SockClientWrite
-  (JNIEnv* env, jobject thiz, jint fd, jobject SensorObj) 
+  (JNIEnv* env, jobject thiz, jint fd, jobject SensorObj)
 {
         int bytes=0;
 	int ssize = sizeof(struct svmp_sensor_event_t);
@@ -86,7 +86,7 @@ JNIEXPORT jint JNICALL Java_org_mitre_svmp_events_BaseServer_SockClientWrite
 	if (SensorClass == NULL){
 	         ALOGD("Class not found!\n");
 	         return -1;
-	} 
+	}
 	jmethodID midGetAccuracy = (*env)->GetMethodID(env,SensorClass,"getAccuracy","()I");
 	evt.accuracy = (*env)->CallIntMethod(env, SensorObj, midGetAccuracy);
 
@@ -116,13 +116,14 @@ JNIEXPORT jint JNICALL Java_org_mitre_svmp_events_BaseServer_SockClientWrite
 	evt.value[2] = carr[2];
 	(*env)->ReleaseFloatArrayElements(env, jarr,carr, 0);
 	//ALOGD("Sending: type:%d,accuracy: %d,timestamp:%ld,value[0]%d,value[1]%d,value[2]%d\n",
-	//	evt.type, evt.accuracy, evt.timestamp, 
+	//	evt.type, evt.accuracy, evt.timestamp,
 	//	evt.value[0],evt.value[1],evt.value[2]);
 
 	// finally write to socket..
 	int err = write(fd,(char*)&evt,sizeof(evt));
-	if ( err < 1) 
-		ALOGD("error with write,():%s, fd is %d\n", strerror(errno),fd);
+	if ( err < 1) {
+        // ALOGD("error with write,():%s, fd is %d\n", strerror(errno),fd);
+    }
 	//ALOGD("wrote  %d bytes on socket, fd %d\n",err, fd );
 
 	return bytes;
