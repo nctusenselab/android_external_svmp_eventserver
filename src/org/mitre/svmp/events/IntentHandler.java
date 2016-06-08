@@ -94,7 +94,16 @@ public class IntentHandler extends BaseHandler {
 					Log.e(TAG, "Receiving a file with filename: " + f.getFilename());
 					saveToFile(f);
 					File savedFile = new File("/sdcard/" + f.getFilename());
-					intent.setDataAndType(Uri.fromFile(savedFile), "application/pdf");
+
+					int idx = savedFile.getName().lastIndexOf('.');
+					String type = "*/*";
+					if (idx > 0) {
+					    String extension = savedFile.getName().substring(idx+1);
+						type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+					}
+					Log.e(TAG, "MIME type is " + type);
+
+					intent.setDataAndType(Uri.fromFile(savedFile), type);
 				} else {
 					intent.setData(Uri.parse(intentRequest.getData()));
 				}
